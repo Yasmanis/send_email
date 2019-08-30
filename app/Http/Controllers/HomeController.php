@@ -33,7 +33,6 @@ class HomeController extends Controller
     public function index()
     {
         $users = User::where('id', '!=', auth()->id())->get();
-
         return view('home', compact('users'));
     }
 
@@ -62,6 +61,16 @@ class HomeController extends Controller
     {
         $message = Message::findOrFail($id);
         return view('messages.show', compact('message'));
+    }
+
+    public function response_message(Request $request)
+    {
+
+        $users = User::where('id', '!=', auth()->id())->get();
+        $user_response = $request->user_response;
+
+        return redirect()->route('home', compact('users','user_response'));
+
     }
 
     public function veriftoken($token)

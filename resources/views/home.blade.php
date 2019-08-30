@@ -14,7 +14,11 @@
                        <select class="form-control" name="user_id" id="">
                            <option value="">Selecciona un usuario</option>
                            @foreach ($users as $user)
-                                <option value="{{$user->id}}">{{$user->name}}</option>    
+                                @if (isset($_GET['user_response']) || $_GET['user_response'] === $user->id)
+                                    <option value="{{$user->id}}" selected >{{$user->name}}</option>
+                                @else
+                                    <option value="{{$user->id}}">{{$user->name}}</option>
+                                @endif
                            @endforeach
                        </select>
                    </div>    
