@@ -20,3 +20,4 @@ Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('/messages', 'HomeController@store')->name('messages.store');
 Route::get('messages/{id}', 'HomeController@show')->name('messages.show');
+Route::get('messages/token/{token}', 'HomeController@veriftoken')->name('veriftoken');

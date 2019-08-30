@@ -3,14 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
 use App\Message;
 use App\Mail\EmergencyCallReceived;
 use App\Notifications\SendNotification;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class HomeController extends Controller
 {
+    use AuthenticatesUsers;
     /**
      * Create a new controller instance.
      *
@@ -18,7 +22,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['veriftoken']]);
     }
 
     /**
@@ -38,7 +42,8 @@ class HomeController extends Controller
         $messages = Message::create([
             'sender_id' => auth()->id(),
             'recipient_id' => $request->user_id,
-            'body' => $request->body
+            'body' => $request->body,
+            'token' => Str::random(60)
         ]);
 
         //capturamos el usuario al que seenvia el mensaje
@@ -57,5 +62,28 @@ class HomeController extends Controller
     {
         $message = Message::findOrFail($id);
         return view('messages.show', compact('message'));
+    }
+
+    public function veriftoken($token)
+    {
+        $truncated = Str::limit($token, 60);
+        $token_recib = trim($truncated, ".");
+        $id = Str::after($token, $token_recib);
+        $message = Message::findOrFail($id);
+
+        if ($token_recib === $message->token ) {
+            $user = User::findOrFail($message->recipient_id);
+            if (Auth::id() != $user->id) {
+                Auth::guard()->logout();
+            }
+            $var = [
+                'email' => $user->email,
+                'password' => decrypt($user->hash)
+            ];
+            
+            Auth::guard()->attempt($var,false);
+            return redirect()->route('messages.show',$id);
+        }
+        
     }
 }

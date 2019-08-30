@@ -18,6 +18,10 @@ class CreateMessagesTable extends Migration
             $table->unsignedInteger('sender_id');
             $table->unsignedInteger('recipient_id');
             $table->text('body');
+            $table->string('token', 80)
+                                    ->unique()
+                                    ->nullable()
+                                    ->default(null);
             $table->timestamps();
         });
     }

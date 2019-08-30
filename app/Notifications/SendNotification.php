@@ -41,9 +41,11 @@ class SendNotification extends Notification
      */
     public function toMail($notifiable)
     {
+        $url = urlencode($this->message->token . $this->message->id);
+
         return (new MailMessage)
                 ->line('Haz recibido un mensaje')
-                ->action('Click aki para ver el mensaje',url('messages',$this->message->id))
+                ->action('Click aki para ver el mensaje',url('messages/token',$url))
                 ->line('Gracias por utilizar nuestra app');
     }
 
