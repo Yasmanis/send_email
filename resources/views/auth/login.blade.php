@@ -1,7 +1,61 @@
-@extends('layouts.app')
+@extends('layouts.login')
 
 @section('content')
-<div class="container">
+<div class="login-area login-s2">
+        <div class="container">
+            <div class="login-box ptb--100" style="margin-top: 20px">
+                <form method="POST" action="{{ route('login') }}">
+                        @csrf
+                    <div class="login-form-head">
+                        <img style="position: absolute;margin-left: -10%" src="{{ asset('plantilla/assets/images/logo.png') }}">
+                        <h4 style="margin-top: -65px">Libreta de Comunicación</h4>
+                        <p></p>
+                    </div>
+                    <div class="login-form-body">
+                        <div class="form-group">
+                            <label for="">Email</label>
+                            <input type="email" name="email" class='form-control @error('email') is-invalid @enderror' required>
+                            {{-- <i class="ti-email"></i> --}}
+                            @error('email')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="">Password</label>
+                            <input type="password" name="password" class='form-control @error('password') is-invalid @enderror' required>
+                            {{-- <i class="ti-lock"></i> --}}
+                            @error('password')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                            @enderror
+                        </div>
+                        <div class="row mb-4 rmber-area">
+                            <div class="col-6">
+                                <div class="custom-control custom-checkbox mr-sm-2">
+                                    <input type="checkbox" class="custom-control-input" id="customControlAutosizing" name="remember">
+                                    <label class="custom-control-label" for="customControlAutosizing">Recuérdame</label>
+                                </div>
+                            </div>
+                            <div class="col-6 text-right">
+                                <a href="{{ route('password.request') }}">Recuperar Contraseῆa?</a>
+                            </div>
+                        </div>
+                        <div class="submit-btn-area">
+                            <button id="form_submit" type="submit">Ingresar <i class="ti-arrow-right"></i></button>
+                        </div>
+                        <div class="form-footer text-center mt-5">
+                            <p class="text-muted">No tienes una cuenta? <a href="{{ route('register') }}">Registrarse</a></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+{{-- <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
@@ -69,5 +123,5 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 @endsection
