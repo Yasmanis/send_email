@@ -39,6 +39,7 @@ class HomeController extends Controller
 
     public function store(Request $request)
     {
+
         $messages = Message::create([
             'sender_id' => auth()->id(),
             'recipient_id' => $request->user_id,
@@ -50,12 +51,17 @@ class HomeController extends Controller
         $recipient = User::find($request->user_id);
        
         //enviar mensaje por correo
-        Mail::to($recipient->email)->send(new EmergencyCallReceived($messages));
+        //Mail::to($recipient->email)->send(new EmergencyCallReceived($messages));
 
         //enviar notification por correo
         $recipient->notify(new SendNotification($messages));
+        
+        if($request->responder){
+            return back()->with('info','Mensaje respondido');
+        }else{
+            return back()->with('info','Mensaje enviado');
+        }
 
-        return back();
     }
 
     public function show($id)
