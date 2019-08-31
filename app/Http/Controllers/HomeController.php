@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CorreoPadres;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
@@ -47,15 +48,8 @@ class HomeController extends Controller
             'token' => Str::random(60)
         ]);
 
-        //capturamos el usuario al que seenvia el mensaje
-        $recipient = User::find($request->user_id);
-       
-        //enviar mensaje por correo
-        //Mail::to($recipient->email)->send(new EmergencyCallReceived($messages));
+        event(new CorreoPadres($messages));
 
-        //enviar notification por correo
-        $recipient->notify(new SendNotification($messages));
-        
         if($request->responder){
             return back()->with('info','Mensaje respondido');
         }else{

@@ -43,3 +43,7 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+    <script src="{{asset('jshome/main.js')}}"></script>
+@endpush
