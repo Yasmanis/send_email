@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
 use App\Message;
+use App\Http\Requests\MessageStoreRequest;
+use App\Http\Requests\MessageRespondRequest;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Mail\EmergencyCallReceived;
@@ -36,11 +38,10 @@ class HomeController extends Controller
     public function index()
     {
         $users = User::where('id', '!=', auth()->id())->get();
-
         return view('messages.create', compact('users'));
     }
 
-    public function store(Request $request)
+    public function store(MessageStoreRequest $request)
     {
         $message = DB::table('messages')
                     ->where([
@@ -71,7 +72,7 @@ class HomeController extends Controller
             if (empty($message)) {
                 $conversation_id = 1;
             } else {
-                $conversation_id = $message->conversation_id + 1;
+                $conversation_id = $message + 1;
             }
             
             $messages = Message::create([
@@ -80,7 +81,7 @@ class HomeController extends Controller
                 'recipient_id' => $request->user_id,
                 'asunto' => Str::title($request->asunto),
                 'body' => $request->body,
-                'body_min' => Str::limit($request->body, 85),
+                'body_min' => Str::limit($request->body, 75),
                 'token' => Str::random(60)
             ]);
         }
@@ -101,19 +102,19 @@ class HomeController extends Controller
         return view('messages.show', compact('message','user','messages'));
     }
 
-    public function response_message(Request $request)
+    public function response_message(MessageRespondRequest $request)
     {
-        $messages = Message::create([
+        Message::create([
             'sender_id' => auth()->id(),
             'conversation_id' => $request->conversation_id,
             'recipient_id' => $request->user_response,
-            'asunto' => Str::title('De',auth()->user()->name),
+            'asunto' => Str::title('De ') . auth()->user()->name,
             'body' => $request->body,
-            'body_min' => Str::limit($request->body, 85),
+            'body_min' => Str::limit($request->body, 75),
             'token' => Str::random(60)
         ]);
 
-        return back()->with('info','Mensaje respondido');
+        return back();
 
     }
 

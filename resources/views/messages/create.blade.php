@@ -16,21 +16,31 @@
                             <select class="form-control" name="user_id" id="" required>
                            <option value="">Selecciona un usuario</option>
                            @foreach ($users as $user)
-                                @if (!empty($_GET))
-                                    <option value="{{$user->id}}" selected >{{$user->name}}</option>
-                                @else
-                                    <option value="{{$user->id}}">{{$user->name}}</option>
-                                @endif
+                                <option value="{{$user->id}}">{{$user->name}}</option>
                            @endforeach
                             </select>
                         </div>
+                       
+                        
                         <div class="form-group d-flex">        
                             <label for="example-text-input" class="col-form-label" style="width: 25%">Asunto:</label>
                             <input class="form-control" type="text" value="" name="asunto" id="example-text-input" required>
+                            
                         </div>
-                        <textarea class="form-control" id="story" placeholder="Escribe aquí tu mensaje" name="body" rows="5" cols="33"></textarea>
+                        <textarea class="form-control" id="story" placeholder="Escribe aquí tu mensaje" name="body" rows="5" cols="33" required></textarea>
                     </div>
+                    
                     <input type="submit" class="btn btn-outline-primary mb-3 float-right" value="Enviar">
+                    
+                    <strong>{!! $errors->first('user_id','<div class="alert alert-danger text-danger" role="alert"><span class=error>Seleccione un usuario!!</span></div>') !!}</strong>
+                    <strong>{!! $errors->first('asunto','<div class="alert alert-danger text-danger" role="alert"><span class=error>Incluya un Asunto</span></div>') !!}</strong>
+                    <strong>{!! $errors->first('body','<div class="alert alert-danger text-danger" role="alert"><span class=error>Incluya un mensaje</span></div>') !!}</strong>
+
+                    @if (session()->has('info'))
+                        <div class="alert alert-success text-center" role="alert">
+                            <strong>{{ session('info') }}!</strong>
+                        </div>
+                    @endif
                 </div>
             </div>
 
@@ -58,7 +68,4 @@
    </div>
    <br>
 </form>
-@if (session()->has('info'))
-                <div class="alert alert-success"> {{ session('info') }} </div>
-            @endif
 @endsection

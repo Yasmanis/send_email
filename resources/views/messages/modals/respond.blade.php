@@ -18,7 +18,9 @@
                 <label for="message-text" class="col-form-label">Message:</label>
                 <textarea class="form-control" name="body" id="message-text" required></textarea>
             </div>
-        
+            <div class="form-group">
+                <strong>{!! $errors->first('body','<div class="alert alert-danger text-danger" role="alert"><span class=error>El mensaje no puede estar vacío!!</span></div>') !!}</strong>
+            </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

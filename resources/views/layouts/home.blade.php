@@ -88,7 +88,7 @@
         <!-- main header area end -->
         
         <!-- page title area end -->
-        <div class="main-content-inner">
+        <div class="main-content-inner" style="height: -webkit-fill-available;">
             <div class="container">
                 @yield('main_content')
             </div>

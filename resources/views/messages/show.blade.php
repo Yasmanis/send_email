@@ -15,8 +15,10 @@
                         <p>{{$message->body}}</p>
                         <br>
                         <hr>
-                        <p class="mb-0 float-right"><input class="btn btn-rounded btn-primary mb-3 btn-sm float-right " data-toggle="modal" data-target="#modal_respond" type="button" value="Responder"></p>
-                        <p>&nbsp;</p>
+                        @if ($message->sender_id !== auth()->id())
+                            <p class="mb-0 float-right"><input class="btn btn-rounded btn-primary mb-3 btn-sm float-right " data-toggle="modal" data-target="#modal_respond" type="button" value="Responder"></p>
+                            <p>&nbsp;</p>
+                        @endif
                         <br>
                     </div>
                 </div>
