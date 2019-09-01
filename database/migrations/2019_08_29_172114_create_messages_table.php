@@ -15,8 +15,10 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->bigInteger('conversation_id');
             $table->unsignedInteger('sender_id');
             $table->unsignedInteger('recipient_id');
+            $table->text('asunto');
             $table->text('body');
             $table->string('token', 80)
                                     ->unique()
