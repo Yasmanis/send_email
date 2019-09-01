@@ -20,6 +20,7 @@ class CreateMessagesTable extends Migration
             $table->unsignedInteger('recipient_id');
             $table->text('asunto');
             $table->text('body');
+            $table->text('body_min');
             $table->string('token', 80)
                                     ->unique()
                                     ->nullable()

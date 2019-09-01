@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
 use App\Message;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Mail\EmergencyCallReceived;
 use App\Notifications\SendNotification;
@@ -61,6 +62,7 @@ class HomeController extends Controller
                 'recipient_id' => $request->user_id,
                 'asunto' => Str::title($request->asunto),
                 'body' => $request->body,
+                'body_min' => Str::limit($request->body, 85),
                 'token' => Str::random(60)
             ]);
         }else
@@ -78,6 +80,7 @@ class HomeController extends Controller
                 'recipient_id' => $request->user_id,
                 'asunto' => Str::title($request->asunto),
                 'body' => $request->body,
+                'body_min' => Str::limit($request->body, 85),
                 'token' => Str::random(60)
             ]);
         }
@@ -93,21 +96,20 @@ class HomeController extends Controller
     {
         $message = Message::findOrFail($id);
         $user = User::findOrFail($message->sender_id);
-        $messages = Message::where('conversation_id','=',$message->conversation_id)->get();
-        return view('messages.show', compact('message','user'));
+        $messages = Message::where('conversation_id','=',$message->conversation_id)->orderByDesc('created_at')->take(5)->get();
+      
+        return view('messages.show', compact('message','user','messages'));
     }
 
     public function response_message(Request $request)
     {
-        $users = User::where('id', '!=', auth()->id())->get();
-        $user_response = $request->user_response;
-
         $messages = Message::create([
             'sender_id' => auth()->id(),
             'conversation_id' => $request->conversation_id,
             'recipient_id' => $request->user_response,
             'asunto' => Str::title('De',auth()->user()->name),
             'body' => $request->body,
+            'body_min' => Str::limit($request->body, 85),
             'token' => Str::random(60)
         ]);
 
