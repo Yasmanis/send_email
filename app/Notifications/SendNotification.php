@@ -44,9 +44,9 @@ class SendNotification extends Notification
         $url = urlencode($this->message->token . $this->message->id);
 
         return (new MailMessage)
-                ->line('Haz recibido un mensaje')
-                ->action('Click aki para ver el mensaje',url('messages/token',$url))
-                ->line('Gracias por utilizar nuestra app');
+                ->subject('Notificación de Comunicación Colegio Puente de Maipo')
+                ->action('Click aquí para ver el mensaje',url('messages/token',$url))
+                ->line('Estimado, mediante este mail, se le envía el acceso a una comunicación enviado a usted por parte del colegio Puente de Maipo');
     }
 
     /**
