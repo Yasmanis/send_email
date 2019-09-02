@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Message;
+use Faker\Generator as Faker;
 
 
 class MessageSeeder extends Seeder
@@ -11,73 +12,73 @@ class MessageSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(Faker $faker)
     {
         Message::truncate();
 
-        $var = Str::random(160);
+        $var = ucwords($faker->catchPhrase .' '.$faker->bs);
         Message::create([
             'sender_id' => 1,
             'conversation_id' => 1,
             'recipient_id' => 2,
-            'asunto' => Str::title(Str::random(10)),
-            'body' => Str::random(160),
+            'asunto' => $faker->sentence(2),
+            'body' => $var,
             'body_min' => Str::limit($var, 85),
             'token' => Str::random(60)
         ]);
         
         
-        $var = Str::random(160);
+        $var = ucwords($faker->catchPhrase .' '.$faker->bs);
         Message::create([
             'sender_id' => 1,
             'conversation_id' => 1,
             'recipient_id' => 2,
-            'asunto' => Str::title(Str::random(10)),
-            'body' => Str::random(160),
+            'asunto' => $faker->sentence(2),
+            'body' => $var,
             'body_min' => Str::limit($var, 85),
             'token' => Str::random(60)
         ]);
 
-        $var = Str::random(160);
+        $var = ucwords($faker->catchPhrase .' '.$faker->bs);
         Message::create([
             'sender_id' => 2,
             'conversation_id' => 1,
             'recipient_id' => 1,
-            'asunto' => Str::title(Str::random(10)),
-            'body' => Str::random(160),
+            'asunto' => $faker->sentence(2),
+            'body' => $var,
             'body_min' => Str::limit($var, 85),
             'token' => Str::random(60)
         ]);
 
-        $var = Str::random(160);
+        $var = ucwords($faker->catchPhrase .' '.$faker->bs);
         Message::create([
             'sender_id' => 2,
             'conversation_id' => 1,
             'recipient_id' => 1,
-            'asunto' => Str::title(Str::random(10)),
-            'body' => Str::random(160),
+            'asunto' => $faker->sentence(2),
+            'body' => $var,
             'body_min' => Str::limit($var, 85),
             'token' => Str::random(60)
         ]);
 
-        $var = Str::random(160);
+        $var = ucwords($faker->catchPhrase .' '.$faker->bs);
         Message::create([
             'sender_id' => 1,
             'conversation_id' => 1,
             'recipient_id' => 2,
-            'asunto' => Str::title(Str::random(10)),
-            'body' => Str::random(160),
+            'asunto' => $faker->sentence(2),
+            'body' => $var,
             'body_min' => Str::limit($var, 85),
             'token' => Str::random(60)
         ]);
 
-        $var = Str::random(160);
+        $var = ucwords($faker->catchPhrase .' '.$faker->bs);
         Message::create([
             'sender_id' => 2,
             'conversation_id' => 1,
             'recipient_id' => 1,
-            'asunto' => Str::title(Str::random(10)),
-            'body' => Str::random(160),
+            'asunto' => $faker->sentence(2),
+            'body' => $var,
             'body_min' => Str::limit($var, 85),
             'token' => Str::random(60)
         ]);
