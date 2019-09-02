@@ -45,8 +45,8 @@ class SendNotification extends Notification
 
         return (new MailMessage)
                 ->subject('Notificación de Comunicación Colegio Puente de Maipo')
-                ->action('Click aquí para ver el mensaje',url('messages/token',$url))
-                ->line('Estimado, mediante este mail, se le envía el acceso a una comunicación enviado a usted por parte del colegio Puente de Maipo');
+                ->line('Mediante este mail, se le envía el acceso a una comunicación enviado a usted por parte del colegio Puente de Maipo')
+                ->action('Click aquí para ver el mensaje',url('messages/token',$url));
     }
 
     /**
