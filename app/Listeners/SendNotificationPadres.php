@@ -34,6 +34,5 @@ class SendNotificationPadres implements ShouldQueue
         $recipient = User::find($message->recipient_id);
         //enviar notification por correo
         $recipient->notify(new SendNotification($message));
-        
     }
 }

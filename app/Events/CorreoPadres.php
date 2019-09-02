@@ -22,7 +22,7 @@ class CorreoPadres
      */
     public function __construct($message)
     {
-        $this->$message = $message;
+        $this->message = $message;
     }
 
     /**
@@ -32,6 +32,6 @@ class CorreoPadres
      */
     public function broadcastOn()
     {
-       // return new PrivateChannel('channel-name');
+        // return new PrivateChannel('channel-name');
     }
 }
