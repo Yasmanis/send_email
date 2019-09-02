@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use App\User;
 use App\Message;
+use App\Http\Requests\MessageStoreRequest;
+use App\Http\Requests\MessageRespondRequest;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use App\Mail\EmergencyCallReceived;
 use App\Notifications\SendNotification;
 use Illuminate\Support\Facades\Mail;
@@ -34,43 +38,83 @@ class HomeController extends Controller
     public function index()
     {
         $users = User::where('id', '!=', auth()->id())->get();
-
-        return view('home', compact('users'));
+        return view('messages.create', compact('users'));
     }
 
-    public function store(Request $request)
+    public function store(MessageStoreRequest $request)
     {
-
-        $messages = Message::create([
-            'sender_id' => auth()->id(),
-            'recipient_id' => $request->user_id,
-            'body' => $request->body,
-            'token' => Str::random(60)
-        ]);
+        $message = DB::table('messages')
+                    ->where([
+                        ['sender_id', '=', auth()->id()],
+                        ['recipient_id', '=', $request->user_id]
+                    ])
+                    ->orWhere([
+                             ['sender_id', '=', $request->user_id],
+                             ['recipient_id', '=', auth()->id()]
+                    ])
+                    ->get();
+     
+        if ($message->count()) 
+        {
+            $message = $message->all();
+            $messages = Message::create([
+                'sender_id' => auth()->id(),
+                'conversation_id' => $message[0]->conversation_id,
+                'recipient_id' => $request->user_id,
+                'asunto' => Str::title($request->asunto),
+                'body' => $request->body,
+                'body_min' => Str::limit($request->body, 85),
+                'token' => Str::random(60)
+            ]);
+        }else
+        {
+            $message = DB::table('messages')->max('conversation_id');
+            if (empty($message)) {
+                $conversation_id = 1;
+            } else {
+                $conversation_id = $message + 1;
+            }
+            
+            $messages = Message::create([
+                'sender_id' => auth()->id(),
+                'conversation_id' => $conversation_id,
+                'recipient_id' => $request->user_id,
+                'asunto' => Str::title($request->asunto),
+                'body' => $request->body,
+                'body_min' => Str::limit($request->body, 75),
+                'token' => Str::random(60)
+            ]);
+        }
 
         event(new CorreoPadres($messages));
 
-        if($request->responder){
-            return back()->with('info','Mensaje respondido');
-        }else{
-            return back()->with('info','Mensaje enviado');
-        }
+        return back()->with('info','Mensaje enviado');
+        
 
     }
 
     public function show($id)
     {
         $message = Message::findOrFail($id);
-        return view('messages.show', compact('message'));
+        $user = User::findOrFail($message->sender_id);
+        $messages = Message::where('conversation_id','=',$message->conversation_id)->orderByDesc('created_at')->take(5)->get();
+      
+        return view('messages.show', compact('message','user','messages'));
     }
 
-    public function response_message(Request $request)
+    public function response_message(MessageRespondRequest $request)
     {
+        Message::create([
+            'sender_id' => auth()->id(),
+            'conversation_id' => $request->conversation_id,
+            'recipient_id' => $request->user_response,
+            'asunto' => Str::title('De ') . auth()->user()->name,
+            'body' => $request->body,
+            'body_min' => Str::limit($request->body, 75),
+            'token' => Str::random(60)
+        ]);
 
-        $users = User::where('id', '!=', auth()->id())->get();
-        $user_response = $request->user_response;
-
-        return redirect()->route('home', compact('users','user_response'));
+        return back();
 
     }
 
