@@ -2,7 +2,7 @@
     {{-- Header --}}
     @slot('header')
         @component('mail::header', ['url' => config('app.url')])
-        <img style="" src="{{ asset('plantilla/assets/images/logo.png') }}">
+        <img style="height: 80px;" src="http://wwwfs.mineduc.cl/Archivos/infoescuelas/imagenes/20298/Escudo%20PuenteMaipo.jpg?fbclid=IwAR0xLBVFSMbMNo7lGGuZDzLzqK_QU-_9r0v_4JvFXguj6gsL4CLtAGizZjo">
         @endcomponent
     @endslot
 
