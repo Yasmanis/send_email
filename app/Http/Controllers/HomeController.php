@@ -44,19 +44,20 @@ class HomeController extends Controller
     public function store(MessageStoreRequest $request)
     {
         $message = DB::table('messages')
-                    ->where([
-                        ['sender_id', '=', auth()->id()],
-                        ['recipient_id', '=', $request->user_id]
-                    ])
-                    ->orWhere([
-                             ['sender_id', '=', $request->user_id],
-                             ['recipient_id', '=', auth()->id()]
-                    ])
-                    ->get();
-     
-        if ($message->count()) 
-        {
+            ->where([
+                ['sender_id', '=', auth()->id()],
+                ['recipient_id', '=', $request->user_id]
+            ])
+            ->orWhere([
+                ['sender_id', '=', $request->user_id],
+                ['recipient_id', '=', auth()->id()]
+            ])
+            ->get();
+
+        if ($message->count()) {
+
             $message = $message->all();
+
             $messages = Message::create([
                 'sender_id' => auth()->id(),
                 'conversation_id' => $message[0]->conversation_id,
@@ -66,15 +67,14 @@ class HomeController extends Controller
                 'body_min' => Str::limit($request->body, 85),
                 'token' => Str::random(60)
             ]);
-        }else
-        {
+        } else {
             $message = DB::table('messages')->max('conversation_id');
             if (empty($message)) {
                 $conversation_id = 1;
             } else {
                 $conversation_id = $message + 1;
             }
-            
+
             $messages = Message::create([
                 'sender_id' => auth()->id(),
                 'conversation_id' => $conversation_id,
@@ -88,18 +88,16 @@ class HomeController extends Controller
 
         event(new CorreoPadres($messages));
 
-        return back()->with('info','Mensaje enviado');
-        
-
+        return back()->with('info', 'Mensaje enviado');
     }
 
     public function show($id)
     {
         $message = Message::findOrFail($id);
         $user = User::findOrFail($message->sender_id);
-        $messages = Message::where('conversation_id','=',$message->conversation_id)->orderByDesc('created_at')->take(5)->get();
-      
-        return view('messages.show', compact('message','user','messages'));
+        $messages = Message::where('conversation_id', '=', $message->conversation_id)->orderByDesc('created_at')->take(5)->get();
+
+        return view('messages.show', compact('message', 'user', 'messages'));
     }
 
     public function response_message(MessageRespondRequest $request)
@@ -115,7 +113,6 @@ class HomeController extends Controller
         ]);
 
         return back();
-
     }
 
     public function veriftoken($token)
@@ -125,7 +122,7 @@ class HomeController extends Controller
         $id = Str::after($token, $token_recib);
         $message = Message::findOrFail($id);
 
-        if ($token_recib === $message->token ) {
+        if ($token_recib === $message->token) {
             $user = User::findOrFail($message->recipient_id);
             if (Auth::id() != $user->id) {
                 Auth::guard()->logout();
@@ -134,10 +131,9 @@ class HomeController extends Controller
                 'email' => $user->email,
                 'password' => decrypt($user->hash)
             ];
-            
-            Auth::guard()->attempt($var,false);
-            return redirect()->route('messages.show',$id);
+
+            Auth::guard()->attempt($var, false);
+            return redirect()->route('messages.show', $id);
         }
-        
     }
 }
